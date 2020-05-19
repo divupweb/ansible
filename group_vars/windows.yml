@@ -1,0 +1,6 @@
+file: group_vars/windows.yml
+ansible_user: localadmin
+ansible_password: mYdeadmemory1991
+ansible_winrm_transport: basic
+ansible_connection: winrm
+ansible_winrm_server_cert_validation: ignore

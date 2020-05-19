@@ -1,0 +1,47 @@
+- name: Windows playbook
+  hosts: windows
+  tasks: 
+    
+    - name: message
+      win_msg:
+        display_seconds: 3
+        msg: script started  
+     
+#    - name: create root user
+#      win_user:
+#        name: root
+#        password: mYdeadmemory1991
+#        groups:
+#          - Администраторы
+  
+#    - name: create download folder
+#      win_file:
+#        path: c:\soft_update
+#        state: directory
+ 
+#    - name: download program
+#      win_get_url:
+#        url: https://download.cdn.viber.com/desktop/windows/ViberSetup.exe
+#        dest: c:\soft_update
+
+#    - name: install viber
+#      win_package:
+#        path: c:\soft_update\ViberSetup.exe
+#        product_id: '{02400359E-6A4c-4884-9E94-B397A02D893C}'
+#        arguments:
+#        - /install
+#        - /passive
+#        - /norestart
+
+#    - name: unistall viber
+#      win_package:
+#        product_id: '{02400359E-6A4c-4884-9E94-B397A02D893C}'
+#        state: absent
+
+#    - name: regedit
+#      win_regedit:
+#        path: HKLM:\Software\MyCompany
+#        name: hello
+#        data: 1337
+#        type: dword
+#        state: present
