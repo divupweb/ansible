@@ -1,4 +1,5 @@
-- name: data get
+---
+- name: mikrotik data Set and Get
   hosts: mikrotik
   gather_facts: false
   tasks:
@@ -8,5 +9,70 @@
         commands: /system routerboard print
       register: system_print
       
-    - name: debug print
+    - name: routerboard print
       debug: var=system_print.stdout_lines
+
+    - name: wi-fi creating of security profiles
+      routeros_command:
+        commands: /interface wireless security-profiles
+                  add authentication-types=wpa2-psk eap-methods="" mode=dynamic-keys name=restricted_wi-fi supplicant-identity="" wpa2-pre-shared-key=backdoor0653  
+      register: system_print
+  
+    - name: wi-fi creating of security profiles stauts print
+      debug: var=system_print.stdout_lines
+
+    - name: wi-fi interface creation
+      routeros_command:
+        commands: /interface wireless
+                  add disabled=no mac-address=00:00:00:00:00:00 master-interface=wlan1 name="Restricted wi-fi" security-profile=restricted_wi-fi ssid=pm_private wds-cost-range=0 wds-default-cost=0 wmm-support=enabled wps-mode=disabled
+      register: system_print
+
+    - name: wi-fi interface creation status print
+      debug: var=system_print.stdout_lines
+
+    - name: wi-fi pool creation
+      routeros_command:
+        commands: /ip pool
+                  add name=dhcp_pool_wi-fi ranges=10.11.12.1-10.11.12.2
+      register: system_print
+
+    - name: wi-fi pool creation status print
+      debug: var=system_print.stdout_lines
+
+    - name: wi-fi dhcp-server creation
+      routeros_command:
+        commands: /ip dhcp-server
+                  add address-pool=dhcp_pool_wi-fi disabled=no interface="Restricted wi-fi" lease-time=12h name=dhcp_wi-fi
+      register: system_print
+
+    - name: wi-fi dhcp-server creation status print
+      debug: var=system_print.stdout_lines
+
+    - name: wi-fi address creation
+      routeros_command:
+        commands: /ip address
+                  add address=10.11.12.1/24 interface="Restricted wi-fi" network=10.11.12.0
+      register: system_print
+
+    - name: wi-fi address creation status print
+      debug: var=system_print.stdout_lines
+
+    - name: wi-fi dhcp-server network creation
+      routeros_command:
+        commands: /ip dhcp-server network    
+                  add address=10.11.12.0/24 dns-server=10.11.12.1 gateway=10.11.12.1                   
+      register: system_print
+
+    - name: wi-fi dhcp-server network creation status print
+      debug: var=system_print.stdout_lines
+
+    - name: wi-fi firewall filter creation
+      routeros_command:
+        commands: 
+          - /ip firewall filter add action=drop chain=forward comment="deny wi-fi requests" dst-address=172.16.18.0/24 src-address=10.11.12.0/24
+          - /ip firewall filter add action=drop chain=forward comment="deny wi-fi requests" dst-address=10.11.12.0/24 src-address=172.16.18.0/24
+      register: system_print
+
+    - name: wi-fi firewall creation status print
+      debug: var=system_print.stdout_lines
+
