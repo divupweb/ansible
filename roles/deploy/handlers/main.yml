@@ -1,0 +1,4 @@
+---  
+    - name: deploy restart
+      routeros_command:
+        commands: /system reboot
